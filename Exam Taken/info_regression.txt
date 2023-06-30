@@ -1,0 +1,138 @@
+%dopo bbegin\document inserire sta roba
+
+\noindent
+\hrulefill
+\begin{flushright}
+\textbf{University  of  Padua -  Department of Physics and Astronomy }\\
+
+\textbf{Degree course:} Physics of Data\\
+\textbf{Course:} Data Mining \\
+\textbf{Year:} 2022-23\\
+\textbf{Professor in charge:} A. Guolo\\
+\end{flushright}
+%\noindent\makebox[\linewidth]{\rule{\paperwidth}{0.4pt}}
+\
+Luca Menti - 2063594 - \url{luca.menti@studenti.unipd.it} \\
+
+\begin{verbatim} Exam's date: 27/06/2023\end{verbatim} \hrulefill
+%\bigksip
+\begin{center}
+    \LARGE{\textbf{ Data Mining Report - Exam}}
+\end{center}
+    \hrulefill
+
+    \section{Aim of the Report }
+ The goal of this report is to analyze a genuine dataset and identify the most suitable model that explains the data. To accomplish this objective, I plan to first study a subset of the dataset, followed by the entire set. Utilizing various techniques, I will then determine which approach yields the most precise results for my analysis.
+
+ \section{Analysis Techniques }
+ \subsection{Point 1}
+ \subsubsection{Multilinear Regression}
+Multilinear Regression is a statistical technique used to analyze the relationship between two or more independent variables and a dependent variable. It is an extension of Simple Linear Regression, which deals with only one independent variable. Multilinear Regression involves creating a mathematical model that calculates the best-fit line for the data by minimizing the sum of the squared differences between the observed and predicted values. This method is often used to make predictions or forecasts of the dependent variable based on the values of the independent variables. It is widely used in fields such as economics, finance, social sciences, and others for developing models and understanding complex relationships between variables.
+
+ \subsubsection{Polynomial Regression}
+Polynomial Regression is a statistical technique used to model the relationship between a dependent variable $Y$ and one or more independent variables $X$. It involves fitting a polynomial equation (quadratic, cubic, or higher-order) to the data instead of a linear relationship seen in simple and multiple linear regression. This method allows for the modeling of non-linear relationships between variables and can result in a better fit to the data than linear regression. 
+ \subsubsection{Backward Selection}
+ We start with all the variables in the model; we remove the variables with the largest p-value, one by one. Go on until the remaining covariates have a small $p-value$. The procedure can’t be used when $p > n$.
+
+ \subsubsection{Generalized additive models (GAM)}
+ In Gam we have flexibility in predicting Y using p covariates. Furthermore
+non-linear functions of the covariates are allowed and the additivity of the components is maintained.
+We also have applicability outside linear models.
+The prons are:
+\begin{itemize}
+    \item{we can model non-linear relationships between $Y$ and $X_{j}$;}
+\item{predictions can potentially be more accurate than those from a linear model;}
+\item{we can still examine the effect of each $X_{j}$ on $Y$ individually, while holding all of the other variables fixed, as in the linear model;}
+\item{ the smoothness of the function $f_{j}$ for the variable $X_{j}$ can be summarized via degrees of freedom.}
+\end{itemize}
+
+While the cons:
+\begin{itemize}
+   \item{the model is additive;}
+\item{in case of many variables, important interactions can be missed;}
+\item{interaction functions of the form $f_{jk}(X_j,X_k)$ can be fit with different smoothers (it can be complex).}
+\end{itemize}
+
+\subsection{Point 2}
+ \subsubsection{Ridge Regression}
+
+ With high-dimensional data ( $p$ very large w.r.t $n$ or even $p>n$ ) the maximum likelihood estimates can be difficult to calculate, it   can be not unique, it can have a large associated standard error and in general there are problems of identifiability and efficiency. One possible solution are shrinkage methos and one of the is
+ Ridge Regression. 
+ Shrinkage methods :
+ \begin{itemize}
+     \item are useful to regularize the estimation process;
+
+     \item they shrink the estimates of the coefficients towards zero;
+
+     \item in this way, the fitting of the model is improved the variability associated to the estimates is smaller.
+ \end{itemize}
+
+ In Ridge regression there is a small shrinkage penalty when the coefficients  of model $\beta_j$ are close to zero. In particular for $\lambda=0 $  the penalty term has no effect, ridge regression will produce the least squares estimates, while for $\lambda \longrightarrow + \infty $ the impact of the shrinkage penalty grows, ridge regression coefficient estimates will approach zero. The choice of $\lambda$ is a crucial point in penalized regression. If $\lambda$ is too small there is no substantial penalization and the estimate is close to least squares estimate. If $\lambda$ is too large there is too much penalization and the estimates are shrunk to zero.
+A good value of $\lambda$ is chosen typically using cross validation.
+
+\subsubsection{Lasso}
+Lasso is a recent alternative to ridge regression which does not select variables. There is a small shrinkage penalty if $\beta_j$ are close to zero or even equal to zero. Furthermore, Lasso performs variable selection as it forces some of the coefficient
+estimates to be zero for sufficiently large $\lambda$ and it is easier to interpret than ridge regression. 
+By the way the disadvantage is that the estimates are not in closed form, neither are the
+associated variances.
+
+\subsubsection{Automatic selection-Stepwise selection}
+We Evaluate a set of models and construct a rank based on one criterion or more criteria.
+The pros are:
+\begin{itemize}
+    \item Quick evaluation of a large number of models
+    \item Useful to have an initial idea about the relationships among the variables
+\end{itemize}
+
+On the other hand, the cons are linked to open problems such as:
+\begin{itemize}
+    \item the variability associated to the model choice is not accounted for estimates biased towards zero, small standard errors, t and F statistics are far from the classical distribution and so on.
+
+    \item More importantly, it is a blind procedure: it does not allow to think about the choice of a model
+\end{itemize}
+
+\subsubsubsection{ Forward selection}
+In Forward selection we :
+
+\begin{itemize}
+    \item search for the best model with one covariate
+    \item search for the best model with two covariates constructed upon
+the previous one
+
+\item and so on
+
+\item research on a subset of $1 + \frac{p(p + 1)}{2}$ models
+\end{itemize}
+
+\textbf{ Backward selection}
+
+\
+In Backward selection we :
+
+\begin{itemize}
+    \item have alternative to forward selection
+    \item start from the model with all the covariates
+   
+
+\item eliminate the nonsignificant covariates one at a time
+
+\item research on a subset of $1 + \frac{p(p + 1)}{2} $ models
+\end{itemize}
+
+\textbf{ Hybrid selection}
+
+\
+In Hybrid selection we :
+
+\begin{itemize}
+    \item add covariates as in forward selection
+    \item but remove them when they do not improve on the model
+   
+
+\item same spirit of best subsets selection 
+\end{itemize}
+
+
+\subsubsection{ Principal Component Analysis}
+
+Principal Component Analysis (PCA) is a dimensionality reduction technique used in machine learning and data analysis. It is used to reduce the dimensionality of large datasets by transforming a large set of variables into a smaller one that still contains most of the information in the large set. PCA is used in exploratory data analysis and for making predictive models. It is commonly used for dimensionality reduction by projecting each data point onto only the first few principal components to obtain lower-dimensional data while preserving as much of the data's variation as possible. The first principal component can equivalently be defined as a direction that maximizes the variance of the projected data. PCA creates variables that are linear combinations of the original variables. The new variables have the advantage of being uncorrelated and capturing the maximum amount of variation in the original dataset.  In conclusion, PCA is a linear dimensionality reduction technique that transforms a set of correlated variables into a smaller number of uncorrelated variables called principal components while retaining as much of the variation in the original dataset as possible.
