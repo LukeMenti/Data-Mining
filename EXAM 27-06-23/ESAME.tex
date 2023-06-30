@@ -1,0 +1,2011 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{ESAME}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    We see that our dataset is mad of \(n=62\) and \(p=13\). These are its
+main features of subset of plot. We have one qualitative variables
+``animated'' and the others are continuos.
+
+Let's also plot the histogram of box in order to check normality and the
+boxplot, otherwise let's apply a log transformation. It easy to see that
+is better consider a log-tranformation. So I will refer to box variable
+as log(box) in the following analysis.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{78}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} load the data}
+
+\PY{n+nf}{load}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{movie.RData\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{ls}\PY{p}{(}\PY{p}{)}
+\PY{n+nf}{names}\PY{p}{(}\PY{n}{movie}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n}{movie}
+\PY{n+nf}{nrow}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{ncol}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+
+\PY{n}{mydata} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n}{mydata}\PY{p}{[}\PY{p}{,} \PY{n+nf}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{budget\PYZsq{}}\PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{animated\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{starpower\PYZdq{}} \PY{p}{,} \PY{l+s}{\PYZsq{}}\PY{l+s}{cmngsoon\PYZsq{}}\PY{p}{)}\PY{p}{]}
+\PY{n}{mydata}\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{3}\PY{p}{,}\PY{p}{]}
+
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}check NA values}
+\PY{n+nf}{sum}\PY{p}{(}\PY{n+nf}{is.na}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}clean from NA}
+\PY{c+c1}{\PYZsh{}mydata \PYZlt{}\PYZhy{} na.omit(mydata)}
+
+
+\PY{c+c1}{\PYZsh{}to remove infinite}
+\PY{c+c1}{\PYZsh{}which(mydata\PYZdl{}felice==\PYZdq{}\PYZhy{}Inf\PYZdq{})}
+\PY{c+c1}{\PYZsh{}mydata\PYZlt{}\PYZhy{}mydata[\PYZhy{}129,]}
+\PY{c+c1}{\PYZsh{}check that they are factors otherwise make it}
+
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{as.factor}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} SE HAI VARIABILI QUALITATIVE CON DEI LIVELLI PLOTTA LA TABELLA }
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{10}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{4}\PY{p}{)}
+\PY{n+nf}{hist}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,} \PY{n}{prob}\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Histogram\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{boxplot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Boxplot\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}} \PY{p}{)}
+\PY{n+nf}{hist}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{)}\PY{p}{,} \PY{n}{prob}\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{log(box)\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Histogram \PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{boxplot}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{)}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{log(box)\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Boxplot\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}} \PY{p}{)}
+
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{log}\PY{p}{(}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{enumerate*}
+\item 'model.mydata'
+\item 'model.mydata2'
+\item 'model.mydata3'
+\item 'model.mydata4'
+\item 'model.mydata5'
+\item 'movie'
+\item 'mydata'
+\end{enumerate*}
+
+
+    
+    \begin{enumerate*}
+\item 'box'
+\item 'mprating'
+\item 'budget'
+\item 'starpower'
+\item 'sequel'
+\item 'action'
+\item 'comedy'
+\item 'animated'
+\item 'horror'
+\item 'addict'
+\item 'cmngsoon'
+\item 'fandango'
+\item 'cntwait'
+\end{enumerate*}
+
+
+    
+    62
+
+    
+    13
+
+    
+    \begin{tabular}{r|lllll}
+ box & budget & animated & starpower & cmngsoon\\
+\hline
+	 191.67085 &  28.0     & FALSE     & 19.83     & 10       \\
+	 631.06589 & 150.0     & TRUE      & 32.69     & 59       \\
+	  54.01605 &  37.4     & FALSE     & 15.69     & 24       \\
+\end{tabular}
+
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      box              budget        animated    starpower        cmngsoon     
+ Min.   :  5.119   Min.   :  5.00   FALSE:56   Min.   : 0.00   Min.   :  2.00  
+ 1st Qu.: 69.565   1st Qu.: 30.50   TRUE : 6   1st Qu.:12.16   1st Qu.: 19.25  
+ Median :169.309   Median : 37.40              Median :18.07   Median : 36.50  
+ Mean   :207.207   Mean   : 53.29              Mean   :18.03   Mean   : 78.21  
+ 3rd Qu.:266.961   3rd Qu.: 60.00              3rd Qu.:24.09   3rd Qu.: 66.00  
+ Max.   :709.505   Max.   :200.00              Max.   :36.76   Max.   :594.00  
+    \end{Verbatim}
+
+    
+    0
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_1_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_1_8.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let also check the relationship between Y and the covariates X:
+
+\begin{itemize}
+\tightlist
+\item
+  between box and budget we see a kind of polynomial relationship
+\item
+  between box and starpower not a particular one
+\item
+  between box and cmngsoon we see a kind of linear relationship even if
+  different points are spread around.
+\end{itemize}
+
+By the way it will be necessary to investigate more.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{79}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{10}\PY{p}{)}
+\PY{n+nf}{pairs}\PY{p}{(}\PY{n}{mydata}\PY{p}{[}\PY{p}{,}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{4}\PY{p}{,}\PY{l+m}{5}\PY{p}{)}\PY{p}{]}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_3_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Regardign the interections between variables we see from the following
+plots that there is some overlapping (in the three scatter plots) so
+maybe there will not be interaction but we have to check it. As concern
+the boxplots: - in the first one from left we don't have a clear
+difference between the two medians suggesting not interaction, the width
+is different, the whiskers are different and with animated = TRUE box is
+higher and we have an outlier for TRUE.
+
+\begin{itemize}
+\item
+  For the second one from left we can perform the same consideration
+  saying that budget is higher for animated, the medians are different
+  suggesting that there could be some interactions.The width is
+  different between animated=TRUE and animated=FALSE and for FALSE we
+  have outliers.
+\item
+  For the third one from left we don't have a clear difference between
+  the two medians suggesting not interactions, the width is different,
+  the whiskers are different and with animated = FALSE cmngsoon is
+  higher and we have and outliers for animated= FALSE
+\item
+  For the fourth one from left we can perform the same consideration
+  saying that budget is higher for animated=TRUE, the medians are
+  different suggesting that there could be some interactions.The
+  wihiskers are different between animated=TRUE and animated=FALSE and
+  we don't have outliers.
+\end{itemize}
+
+In order to check possible interactions we have to investigate more with
+regression.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} plot con tutte le variabili in funzione di y per vedere eventuale relazione}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}plot per verificare eventuali interazioni, nel caso di variabili di tipo YES/NO o livelli o classe insomme}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{3}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{10}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{5}\PY{p}{)}
+
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{budget}\PY{p}{,} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,} \PY{n}{cex.lab}\PY{o}{=}\PY{l+m}{1.2}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{budget\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{,}\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{)}
+\PY{n+nf}{legend}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{bottomright\PYZsq{}}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{19}\PY{p}{,}\PY{l+m}{19}\PY{p}{)}\PY{p}{,}
+        \PY{n}{legend}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{animated==false\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{animated==true\PYZsq{}}\PY{p}{)}\PY{p}{)}
+
+
+
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{cmngsoon}\PY{p}{,} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,} \PY{n}{cex.lab}\PY{o}{=}\PY{l+m}{1.2}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{cmngsoon\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{,}\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{)}
+\PY{n+nf}{legend}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{bottomright\PYZsq{}}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{19}\PY{p}{,}\PY{l+m}{19}\PY{p}{)}\PY{p}{,}
+        \PY{n}{legend}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{animated==false\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{animated==true\PYZsq{}}\PY{p}{)}\PY{p}{)}
+
+
+
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{starpower}\PY{p}{,} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,} \PY{n}{cex.lab}\PY{o}{=}\PY{l+m}{1.2}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{starpower\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{,}\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{)}
+\PY{n+nf}{legend}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+m}{10}\PY{p}{,}\PY{n}{y}\PY{o}{=}\PY{l+m}{3}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{19}\PY{p}{,}\PY{l+m}{19}\PY{p}{)}\PY{p}{,}
+        \PY{n}{legend}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{animated==false\PYZsq{}}\PY{p}{,}\PY{l+s}{\PYZsq{}}\PY{l+s}{animated==true\PYZsq{}}\PY{p}{)}\PY{p}{)}
+
+
+
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} plot boxplot per eventuali iterazioni (basati pero sempre su quello sopra)}
+\PY{n+nf}{boxplot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{o}{\PYZti{}} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{,} \PY{n}{las}\PY{o}{=}\PY{l+m}{2}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{0.7}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{,}\PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{animated\PYZdq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{box\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{box vs animated\PYZdq{}}\PY{p}{)}
+
+
+\PY{n+nf}{boxplot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{budget}\PY{o}{\PYZti{}} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{,} \PY{n}{las}\PY{o}{=}\PY{l+m}{2}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{0.7}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{,}\PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{animated\PYZdq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{budget\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{budget vs animated\PYZdq{}}\PY{p}{)}
+
+\PY{n+nf}{boxplot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{cmngsoon}\PY{o}{\PYZti{}} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{,} \PY{n}{las}\PY{o}{=}\PY{l+m}{2}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{0.7}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{,}\PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{animated\PYZdq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{cmngsoon\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{cmngsoon vs animated\PYZdq{}}\PY{p}{)}
+
+\PY{n+nf}{boxplot}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{starpower}\PY{o}{\PYZti{}} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{,} \PY{n}{las}\PY{o}{=}\PY{l+m}{2}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{0.7}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{,}\PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{animated\PYZdq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{starpower\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{starpower vs animated\PYZdq{}}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}par(mfrow=c(1,2))}
+\PY{c+c1}{\PYZsh{}\PYZsh{} plot moasic plot}
+\PY{c+c1}{\PYZsh{}mosaicplot(table(mydata\PYZdl{}prefer,mydata\PYZdl{}stories), las=2, cex.axis=0.7,col=\PYZdq{}lightblue\PYZdq{},}
+\PY{c+c1}{\PYZsh{}xlab=\PYZsq{}\PYZsq{}, main=\PYZsq{}prefer vs stories \PYZsq{})}
+\PY{c+c1}{\PYZsh{}mosaicplot(table( mydata\PYZdl{}aircon, mydata\PYZdl{}prefer), las=2, cex.axis=0.7,col=\PYZdq{}lightblue\PYZdq{},}
+\PY{c+c1}{\PYZsh{}xlab=\PYZsq{}\PYZsq{}, main=\PYZsq{}aircon vs prefer \PYZsq{})}
+\PY{c+c1}{\PYZsh{}mosaicplot(table(mydata\PYZdl{}x1, mydata\PYZdl{}x1\PYZhy{}livello), main=\PYZsq{}x1 vs x1\PYZhy{}livello\PYZsq{},col=\PYZdq{}lightblue\PYZdq{})}
+\PY{c+c1}{\PYZsh{}mosaicplot(table(mydata\PYZdl{}x1, mydata\PYZdl{}x2\PYZhy{}livello), main=\PYZsq{}x1 vs x2\PYZhy{}livello\PYZsq{},col=\PYZdq{}lightblue\PYZdq{})}
+\PY{c+c1}{\PYZsh{}mosaicplot(table(mydata\PYZdl{}x1\PYZhy{}livello, mydata\PYZdl{}x2\PYZhy{}livello), main=\PYZsq{}x1\PYZhy{}livello vs x2\PYZhy{}livello\PYZsq{},col=\PYZdq{}lightblue\PYZdq{})}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_5_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{multiple-linear-regression}{%
+\subsubsection{Multiple Linear
+Regression}\label{multiple-linear-regression}}
+
+After this preliminary analysis we can apply a linear regression. Let's
+start with a model with all variables and interactions and then perform
+model selection base ond \(P-value\).
+
+So I started with a model including also the interactions between the
+covariates then the final model I have obtained: \$box=
++4.421+0.008\emph{budget -2.344}animated* \$\$ I\_\{animated=TRUE\} \$
+\(+ 0.002*cmngsoon + 0.052*animated*cmngsoon\)
+
+is the following output. In the table below the 95\% CI for coefficients
+is reported.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model.mydata} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{lm}\PY{p}{(}\PY{n}{box}\PY{o}{\PYZti{}}\PY{n}{budget}\PY{o}{*}\PY{n}{cmngsoon} \PY{o}{+} \PY{n}{budget}\PY{o}{*}\PY{n}{starpower} \PY{o}{+} \PY{n}{budget}\PY{o}{*}\PY{n}{animated}\PY{o}{+} \PY{n}{starpower}\PY{o}{*}\PY{n}{cmngsoon} \PY{o}{+}\PY{n}{animated}\PY{o}{*}\PY{n}{cmngsoon}\PY{o}{+}\PY{n}{starpower}\PY{o}{*}\PY{n}{animated} \PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}summary(model.mydata)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} rimuovere interazione non significativa (P\PYZhy{}value più alto), ad esempio quella tra x1 e x4. }
+\PY{n}{model.mydata2} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{update}\PY{p}{(}\PY{n}{model.mydata}\PY{p}{,} \PY{n}{.}\PY{o}{\PYZti{}}\PY{n}{.}\PY{o}{\PYZhy{}}\PY{n}{budget}\PY{o}{:}\PY{n}{animated}\PY{o}{\PYZhy{}}\PY{n}{budget}\PY{o}{:}\PY{n}{cmngsoon}\PY{o}{\PYZhy{}}\PY{n}{budget}\PY{o}{:}\PY{n}{starpower}\PY{o}{\PYZhy{}}\PY{n}{cmngsoon}\PY{o}{:}\PY{n}{starpower}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}summary(model.mydata2)}
+\PY{c+c1}{\PYZsh{}summary(model.mydata2)}
+\PY{n}{model.mydata3} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{update}\PY{p}{(}\PY{n}{model.mydata2}\PY{p}{,} \PY{n}{.}\PY{o}{\PYZti{}}\PY{n}{.}\PY{o}{\PYZhy{}}\PY{n}{animated}\PY{o}{:}\PY{n}{starpower}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}summary(model.mydata3)}
+
+
+\PY{c+c1}{\PYZsh{}model.mydata4 \PYZlt{}\PYZhy{} update(model.mydata3, .\PYZti{}.\PYZhy{}stories:prefer)}
+
+
+\PY{n}{model.mydata41} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{update}\PY{p}{(}\PY{n}{model.mydata3}\PY{p}{,} \PY{n}{.}\PY{o}{\PYZti{}}\PY{n}{.}\PY{o}{\PYZhy{}}\PY{n}{starpower}\PY{p}{)}
+
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{)}
+
+
+\PY{n+nf}{confint}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = box \textasciitilde{} budget + cmngsoon + animated + cmngsoon:animated, 
+    data = mydata)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.75479 -0.53717  0.07359  0.60779  1.21553 
+
+Coefficients:
+                        Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            4.4211114  0.1652971  26.746  < 2e-16 ***
+budget                 0.0080583  0.0025631   3.144 0.002646 ** 
+cmngsoon               0.0019240  0.0007752   2.482 0.016031 *  
+animatedTRUE          -2.3436926  0.6569115  -3.568 0.000738 ***
+cmngsoon:animatedTRUE  0.0519782  0.0157352   3.303 0.001654 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.7437 on 57 degrees of freedom
+Multiple R-squared:  0.4188,	Adjusted R-squared:  0.378 
+F-statistic: 10.27 on 4 and 57 DF,  p-value: 2.487e-06
+
+    \end{Verbatim}
+
+    
+    \begin{tabular}{r|ll}
+  & 2.5 \% & 97.5 \%\\
+\hline
+	(Intercept) &  4.0901096969 &  4.752113005 \\
+	budget &  0.0029257614 &  0.013190791 \\
+	cmngsoon &  0.0003718007 &  0.003476288 \\
+	animatedTRUE & -3.6591351480 & -1.028250123 \\
+	cmngsoon:animatedTRUE &  0.0204690696 &  0.083487393 \\
+\end{tabular}
+
+
+    
+    I tried also with polynomial terms for cmngsoon and budget but they are
+not significant as shown in the following output ( I also tried removing
+as quadratic term for budget keeping it for cmngsoon and viceversa but
+nothing changes).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{82}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model.mydata5} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{update}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{,} \PY{n}{.}\PY{o}{\PYZti{}}\PY{n}{.}\PY{o}{+}\PY{n+nf}{I}\PY{p}{(}\PY{n}{budget}\PY{o}{\PYZca{}}\PY{l+m}{2}\PY{p}{)}\PY{o}{+}\PY{n+nf}{I}\PY{p}{(}\PY{n}{cmngsoon}\PY{o}{\PYZca{}}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{model.mydata5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = box \textasciitilde{} budget + cmngsoon + animated + I(budget\^{}2) + 
+    I(cmngsoon\^{}2) + cmngsoon:animated, data = mydata)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.68843 -0.57156  0.07404  0.61563  1.22495 
+
+Coefficients:
+                        Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            4.500e+00  2.898e-01  15.527  < 2e-16 ***
+budget                 7.299e-03  8.592e-03   0.849 0.399317    
+cmngsoon               9.640e-05  2.897e-03   0.033 0.973571    
+animatedTRUE          -2.384e+00  6.781e-01  -3.515 0.000888 ***
+I(budget\^{}2)            6.146e-06  4.642e-05   0.132 0.895146    
+I(cmngsoon\^{}2)          3.641e-06  5.534e-06   0.658 0.513263    
+cmngsoon:animatedTRUE  5.242e-02  1.632e-02   3.213 0.002198 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.7541 on 55 degrees of freedom
+Multiple R-squared:  0.4234,	Adjusted R-squared:  0.3605 
+F-statistic: 6.731 on 6 and 55 DF,  p-value: 2.203e-05
+
+    \end{Verbatim}
+
+    
+    From anova we see that we keep model without all the terms and
+interaction (the initial one).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{83}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{anova}\PY{p}{(}\PY{n}{model.mydata}\PY{p}{,}\PY{n}{model.mydata41}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tabular}{r|llllll}
+ Res.Df & RSS & Df & Sum of Sq & F & Pr(>F)\\
+\hline
+	 51        & 29.82083  & NA        &        NA &        NA &        NA\\
+	 57        & 31.52650  & -6        & -1.705674 & 0.4861779 & 0.8155907\\
+\end{tabular}
+
+
+    
+    Now we can judge also our model considering the residuals. The graph of
+residuals indicates that the model does not have an pretty good fit. In
+fact, the first graph (scatter plot of the residuals) doesn't show a
+non- deterministic pattern . In addition, the mean of the residuals does
+not appear to be 0 and the variance of the residuals does not appear to
+be constant, as it should be based on the assumptions that the
+regression model places on the ε errors. Furthermore,to complete the
+analysis of the residuals, outliers appear to be present as shown from
+Cook's distance\textgreater1. So let's remove it and see if something
+change.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} subdivide the window into 4 parts, 2 rows and 2 columns , residul plot}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{7}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} plot the Cook\PYZsq{}s distance}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{,} \PY{l+m}{4}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{,} \PY{l+m}{5}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n}{mydata}\PY{p}{[}\PY{l+m}{\PYZhy{}12}\PY{p}{,}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Removing the outliers leads the animated to lose significance in the
+model (also its interactions), so let's try another fit removing it and
+the interactions
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{85}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model.mydata4} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{lm}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{budget}\PY{o}{+} \PY{n}{cmngsoon} \PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{model.mydata4}\PY{p}{)}
+\PY{n+nf}{confint}\PY{p}{(}\PY{n}{model.mydata4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = box \textasciitilde{} budget + cmngsoon, data = mydata)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.7335 -0.4642  0.1049  0.5941  1.2165 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 4.3772836  0.1535636  28.505  < 2e-16 ***
+budget      0.0092566  0.0021263   4.353 5.52e-05 ***
+cmngsoon    0.0018777  0.0007334   2.560   0.0131 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.7093 on 58 degrees of freedom
+Multiple R-squared:  0.3204,	Adjusted R-squared:  0.297 
+F-statistic: 13.67 on 2 and 58 DF,  p-value: 1.364e-05
+
+    \end{Verbatim}
+
+    
+    \begin{tabular}{r|ll}
+  & 2.5 \% & 97.5 \%\\
+\hline
+	(Intercept) & 4.0698927765 & 4.684674482 \\
+	budget & 0.0050003890 & 0.013512714 \\
+	cmngsoon & 0.0004096702 & 0.003345711 \\
+\end{tabular}
+
+
+    
+    We obtain a model \(box=4.377+ 0.009* budget +0.002* cmngsoon\). We see
+that the residuals in this case are goos and doesn't not present a
+deterministic path. In addition, the mean of the residuals does appear
+to be almost 0 and the variance of the residuals does appear to be
+constant, as it should be based on the assumptions that the regression
+model places on the ε errors. Furthermore, the normality of the
+residuals is satisfied as highlighted in the second graph: the empirical
+quantiles, in fact, does not deviate from the theoretical quantiles of a
+standard normal (except for one of the tails).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{86}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} subdivide the window into 4 parts, 2 rows and 2 columns , residul plot}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{7}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.mydata4}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} plot the Cook\PYZsq{}s distance}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.mydata4}\PY{p}{,} \PY{l+m}{4}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.mydata4}\PY{p}{,} \PY{l+m}{5}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_17_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let's compare the model obtained with the outlier with the one without
+the outlier using anova ( on the same dataset without the outlier). We
+see the model without animated (due to elimination of outlier value) is
+preferable. So our final model is :
+\(box=4.377+ 0.009* budget +0.003* cmngsoon\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model.mydata41} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{lm}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{budget} \PY{o}{+} \PY{n}{cmngsoon} \PY{o}{+} \PY{n}{animated} \PY{o}{+} \PY{n}{cmngsoon}\PY{o}{:}\PY{n}{animated}\PY{p}{,}\PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{anova}\PY{p}{(}\PY{n}{model.mydata41}\PY{p}{,}\PY{n}{model.mydata4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tabular}{r|llllll}
+ Res.Df & RSS & Df & Sum of Sq & F & Pr(>F)\\
+\hline
+	 56         & 28.79292   & NA         &         NA &        NA  &        NA \\
+	 58         & 29.18307   & -2         & -0.3901517 & 0.3794074  & 0.6860122 \\
+\end{tabular}
+
+
+    
+    \hypertarget{gam}{%
+\subsection{Gam}\label{gam}}
+
+let's also try with smooth splines to see if we obtaine better model. In
+order to find the degrees of freedom I have used the cross validation (9
+for budget 4 for cmngsoon). I report just the gam output for cmngsoon
+since it is the most interested( for budget splines is not useful based
+on p-value). From the output,based on \(P-value\) we see that we don't
+need smoothing splines (even if we are in a borderline for cmngsoon
+since we have \(p-value\)=0.055 (greater than 0.05 by the way) ). In the
+following plot we there are the predictions based on this model.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{96}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{set.seed}\PY{p}{(}\PY{l+m}{111}\PY{p}{)}
+\PY{n+nf}{library}\PY{p}{(}\PY{n}{gam}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} CONSIDERA LE VARIABILI NON LINEARI}
+\PY{n}{m.gam} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{gam}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{budget} \PY{o}{+} \PY{n+nf}{s}\PY{p}{(}\PY{n}{cmngsoon}\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{,}
+\PY{c+c1}{\PYZsh{}+s(x5, degree of freedoms find before)*x6 (se hai interazione)}
+\PY{c+c1}{\PYZsh{}altre variabili del best model,}
+\PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.gam}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Warning message in model.matrix.default(mt, mf, contrasts):
+“non-list contrasts argument ignored”
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call: gam(formula = box \textasciitilde{} budget + s(cmngsoon, 4), data = mydata)
+Deviance Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.53341 -0.46280  0.07629  0.50166  1.09710 
+
+(Dispersion Parameter for gaussian family taken to be 0.4628)
+
+    Null Deviance: 42.9432 on 60 degrees of freedom
+Residual Deviance: 25.453 on 55 degrees of freedom
+AIC: 133.794 
+
+Number of Local Scoring Iterations: 2 
+
+Anova for Parametric Effects
+               Df  Sum Sq Mean Sq F value    Pr(>F)    
+budget          1  9.0506  9.0506 19.5569 4.652e-05 ***
+s(cmngsoon, 4)  1  3.3608  3.3608  7.2622  0.009322 ** 
+Residuals      55 25.4530  0.4628                      
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Anova for Nonparametric Effects
+               Npar Df Npar F   Pr(F)  
+(Intercept)                            
+budget                                 
+s(cmngsoon, 4)       3 2.6867 0.05532 .
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+    \end{Verbatim}
+
+    
+    \hypertarget{conclusion-point-1}{%
+\section{Conclusion Point 1}\label{conclusion-point-1}}
+
+We have that: - boxs depend positevly from budget - boxs depend
+positevly from cmngsoon
+
+The final model for the subset is:
+\(box=4.377+ 0.009* budget +0.003* cmngsoon\).
+
+    \hypertarget{ridge}{%
+\subsubsection{RIDGE}\label{ridge}}
+
+Let's consider all the dataset. In the following we plot the
+informations about covariates and first three rows of the dataset.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{121}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} load the data}
+
+\PY{n+nf}{load}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{movie.RData\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{ls}\PY{p}{(}\PY{p}{)}
+\PY{n+nf}{names}\PY{p}{(}\PY{n}{movie}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n}{movie}
+\PY{n+nf}{nrow}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{ncol}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+
+
+
+
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}check NA values}
+\PY{n+nf}{sum}\PY{p}{(}\PY{n+nf}{is.na}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}clean from NA}
+\PY{n}{mydata} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{na.omit}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}mydata\PYZdl{}box\PYZlt{}\PYZhy{}log((mydata\PYZdl{}box))}
+\PY{c+c1}{\PYZsh{}to remove infinite}
+
+\PY{n}{mydata}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n}{mydata}\PY{p}{[}\PY{l+m}{\PYZhy{}12}\PY{p}{,}\PY{p}{]}
+\PY{n}{mydata}\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{3}\PY{p}{,}\PY{p}{]}
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{as.factor}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{animated}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{sequel}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{as.factor}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{sequel}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{action}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{as.factor}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{action}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{horror}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{as.factor}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{horror}\PY{p}{)}
+\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{comedy}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{as.factor}\PY{p}{(}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{comedy}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{enumerate*}
+\item 'X'
+\item 'best.lambda'
+\item 'cv.lasso'
+\item 'cv.ridge'
+\item 'id.zero'
+\item 'm.gam'
+\item 'm.glm'
+\item 'm.glm.cv'
+\item 'm.lasso'
+\item 'm.lasso.min'
+\item 'm.ridge'
+\item 'm.ridge.min'
+\item 'model.mydata'
+\item 'model.mydata2'
+\item 'model.mydata3'
+\item 'model.mydata4'
+\item 'model.mydata41'
+\item 'model.mydata5'
+\item 'movie'
+\item 'mse'
+\item 'mydata'
+\item 'nonzero'
+\item 'prediction.lasso'
+\item 'prediction.ridge'
+\item 'x1.cv'
+\item 'x2.cv'
+\item 'y'
+\end{enumerate*}
+
+
+    
+    \begin{enumerate*}
+\item 'box'
+\item 'mprating'
+\item 'budget'
+\item 'starpower'
+\item 'sequel'
+\item 'action'
+\item 'comedy'
+\item 'animated'
+\item 'horror'
+\item 'addict'
+\item 'cmngsoon'
+\item 'fandango'
+\item 'cntwait'
+\end{enumerate*}
+
+
+    
+    62
+
+    
+    13
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      box          mprating     budget         starpower       sequel  
+ Min.   :  5.119   1: 2     Min.   :  5.00   Min.   : 0.00   FALSE:53  
+ 1st Qu.: 69.565   2:15     1st Qu.: 30.50   1st Qu.:12.16   TRUE : 9  
+ Median :169.309   3:28     Median : 37.40   Median :18.07             
+ Mean   :207.207   4:17     Mean   : 53.29   Mean   :18.03             
+ 3rd Qu.:266.961            3rd Qu.: 60.00   3rd Qu.:24.09             
+ Max.   :709.505            Max.   :200.00   Max.   :36.76             
+   action     comedy    animated    horror       addict         cmngsoon     
+ FALSE:48   FALSE:42   FALSE:56   FALSE:56   Min.   :  568   Min.   :  2.00  
+ TRUE :14   TRUE :20   TRUE : 6   TRUE : 6   1st Qu.: 1671   1st Qu.: 19.25  
+                                             Median : 3480   Median : 36.50  
+                                             Mean   : 5934   Mean   : 78.21  
+                                             3rd Qu.: 7836   3rd Qu.: 66.00  
+                                             Max.   :45866   Max.   :594.00  
+    fandango         cntwait      
+ Min.   :  35.0   Min.   :0.1500  
+ 1st Qu.: 254.8   1st Qu.:0.3600  
+ Median : 430.5   Median :0.4850  
+ Mean   : 522.3   Mean   :0.4824  
+ 3rd Qu.: 663.5   3rd Qu.:0.5875  
+ Max.   :1778.0   Max.   :0.7900  
+    \end{Verbatim}
+
+    
+    0
+
+    
+    \begin{tabular}{r|lllllllllllll}
+ box & mprating & budget & starpower & sequel & action & comedy & animated & horror & addict & cmngsoon & fandango & cntwait\\
+\hline
+	 191.67085 & 4         &  28.0     & 19.83     & FALSE     & FALSE     & TRUE      & FALSE     & FALSE     & 7860.5    & 10        & 144       & 0.49     \\
+	 631.06589 & 2         & 150.0     & 32.69     & TRUE      & FALSE     & FALSE     & TRUE      & FALSE     & 5737.0    & 59        & 468       & 0.79     \\
+	  54.01605 & 4         &  37.4     & 15.69     & FALSE     & FALSE     & TRUE      & FALSE     & FALSE     &  850.0    & 24        & 198       & 0.36     \\
+\end{tabular}
+
+
+    
+    We see that 14 over the graph indicate the number of covariates entering
+the model as \$ \lambda\$ varies: 14 is repeated, as ridge regression is
+not a selection method.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{122}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{library}\PY{p}{(}\PY{n}{glmnet}\PY{p}{)}
+\PY{n}{y} \PY{o}{\PYZlt{}\PYZhy{}}  \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}
+\PY{n}{X} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{model.matrix}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{.}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}\PY{p}{[}\PY{p}{,}\PY{l+m}{\PYZhy{}1}\PY{p}{]}
+\PY{n}{m.ridge} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{glmnet}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m}{0}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} plot graphical evaluation}
+
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{7}\PY{p}{)}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mar} \PY{o}{=} \PY{n+nf}{c}\PY{p}{(}\PY{l+m}{5.1}\PY{p}{,} \PY{l+m}{6.1}\PY{p}{,} \PY{l+m}{4.1}\PY{p}{,} \PY{l+m}{2.1}\PY{p}{)}\PY{p}{)}
+    \PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.ridge}\PY{p}{,} \PY{n}{xvar}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{lambda\PYZsq{}}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{Graphical} \PY{o}{\PYZti{}} \PY{n}{evaluation} \PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{o}{\PYZti{}}\PY{n}{with}\PY{o}{\PYZti{}}\PY{n}{x}\PY{p}{[}\PY{n}{axis}\PY{p}{]}\PY{o}{\PYZti{}}\PY{n}{expressed}\PY{o}{\PYZti{}}\PY{n}{In}\PY{o}{\PYZti{}}\PY{n}{terms}\PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}}\PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.ridge}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{Graphical} \PY{o}{\PYZti{}} \PY{n}{evaluation} \PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{o}{\PYZti{}}\PY{n}{without}\PY{o}{\PYZti{}}\PY{n}{x}\PY{p}{[}\PY{n}{axis}\PY{p}{]}\PY{o}{\PYZti{}}\PY{n}{expressed}\PY{o}{\PYZti{}}\PY{n}{In}\PY{o}{\PYZti{}}\PY{n}{terms}\PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}}\PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_26_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now let's look for the best \(\lambda\) using cross validation. The plot
+below shows the values of \(cvm\) for each \(log(\lambda)\) together
+with the associated confidence interval. The two dashed lines are the
+values of minimun \(log(\lambda)\) and \(log(\lambda)\) \(1 \sigma\) far
+from the minimum.\\
+So the best \(\lambda\) from cross validation is: 71\\
+And the MSE is: 16003
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{126}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} cross validation plot}
+
+\PY{n+nf}{set.seed}\PY{p}{(}\PY{l+m}{2906}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{warn}\PY{o}{=}\PY{l+m}{\PYZhy{}1}\PY{p}{)}
+\PY{n}{cv.ridge} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{cv.glmnet}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m}{0}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{cv.ridge}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{text}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n+nf}{log}\PY{p}{(}\PY{n}{cv.ridge}\PY{o}{\PYZdl{}}\PY{n}{lambda.min}\PY{p}{)}\PY{l+m}{+0.5}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{30000}\PY{p}{,} \PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{ best log(λ) =\PYZdq{}}\PY{p}{,}\PY{n+nf}{round}\PY{p}{(}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{cv.ridge}\PY{o}{\PYZdl{}}\PY{n}{lambda.min}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{cross} \PY{o}{\PYZti{}} \PY{n}{validation} \PY{o}{\PYZti{}}\PY{n}{For}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} best lambda and MSE}
+
+\PY{n}{best.lambda} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n}{cv.ridge}\PY{o}{\PYZdl{}}\PY{n}{lambda.min}
+\PY{n}{best.lambda}
+
+\PY{n}{mse}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{min}\PY{p}{(}\PY{n}{cv.ridge}\PY{o}{\PYZdl{}}\PY{n}{cvm}\PY{p}{)}
+\PY{n}{mse}
+\end{Verbatim}
+\end{tcolorbox}
+
+    71.2857129477994
+
+    
+    16002.6055378586
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_28_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now we can Re-estimate the model using the best \(\lambda\). Below we
+seen the coefficients of the model, graphical representation of the
+coefficients for the best \(\lambda\) and model deviance.\\
+The maximum explained deviance is obtained for the minimum (best)
+\(\lambda\) and it is equal to:0.61
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{125}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} best model}
+
+\PY{n}{m.ridge.min} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{glmnet}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m}{0}\PY{p}{,} \PY{n}{lambda}\PY{o}{=}\PY{n}{best.lambda}\PY{p}{)}
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.ridge}\PY{p}{,} \PY{n}{xvar}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{lambda\PYZsq{}}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} add on the line corresponding to the best lambda abline(v=log(best.lambda), lty=2)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{Graphical} \PY{o}{\PYZti{}} \PY{n}{evaluation} \PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{o}{\PYZti{}}\PY{n}{with}\PY{o}{\PYZti{}}\PY{n}{x}\PY{p}{[}\PY{n}{axis}\PY{p}{]}\PY{o}{\PYZti{}}\PY{n}{expressed}\PY{o}{\PYZti{}}\PY{n}{In}\PY{o}{\PYZti{}}\PY{n}{terms}\PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}}\PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} deviance}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{m.ridge}\PY{o}{\PYZdl{}}\PY{n}{lambda}\PY{p}{)}\PY{p}{,} \PY{n}{m.ridge}\PY{o}{\PYZdl{}}\PY{n}{dev.ratio}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}
+       \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Explained deviance\PYZsq{}}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n+nf}{log}\PY{p}{(}\PY{n}{best.lambda}\PY{p}{)}\PY{p}{,} \PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{legend}\PY{p}{(}\PY{n}{legend} \PY{o}{=} \PY{n+nf}{expression}\PY{p}{(}\PY{n}{best}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lt}\PY{o}{=}\PY{l+m}{2}\PY{p}{,}\PY{n}{x} \PY{o}{=} \PY{l+m}{2.5}\PY{p}{,}\PY{n}{bty}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{n\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{0.5}\PY{p}{)}
+\PY{n+nf}{title }\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Graph of explained deviance\PYZdq{}}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} maxi explained deviance}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_30_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{lasso}{%
+\subsubsection{LASSO}\label{lasso}}
+
+Let's perform the analysis usign lasso.
+
+Above we can see the graphical evaluation of the coefficients associated
+to the covariates. We see that 14 over the graph indicate the number of
+covariates entering the model as \$ \lambda\$ varies:14 is not repeated,
+as lasso regression is a selection method.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{127}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} lasso regression}
+\PY{n+nf}{library}\PY{p}{(}\PY{n}{glmnet}\PY{p}{)}
+\PY{n}{m.lasso} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{glmnet}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m}{1}\PY{p}{)}
+
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{7}\PY{p}{)}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mar} \PY{o}{=} \PY{n+nf}{c}\PY{p}{(}\PY{l+m}{5.1}\PY{p}{,} \PY{l+m}{6.1}\PY{p}{,} \PY{l+m}{4.1}\PY{p}{,} \PY{l+m}{2.1}\PY{p}{)}\PY{p}{)}
+    \PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.lasso}\PY{p}{,} \PY{n}{xvar}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{lambda\PYZsq{}}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{Graphical} \PY{o}{\PYZti{}} \PY{n}{evaluation} \PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{o}{\PYZti{}}\PY{n}{with}\PY{o}{\PYZti{}}\PY{n}{x}\PY{p}{[}\PY{n}{axis}\PY{p}{]}\PY{o}{\PYZti{}}\PY{n}{expressed}\PY{o}{\PYZti{}}\PY{n}{In}\PY{o}{\PYZti{}}\PY{n}{terms}\PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}}\PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.lasso}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{Graphical} \PY{o}{\PYZti{}} \PY{n}{evaluation} \PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{o}{\PYZti{}}\PY{n}{without}\PY{o}{\PYZti{}}\PY{n}{x}\PY{p}{[}\PY{n}{axis}\PY{p}{]}\PY{o}{\PYZti{}}\PY{n}{expressed}\PY{o}{\PYZti{}}\PY{n}{In}\PY{o}{\PYZti{}}\PY{n}{terms}\PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}}\PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_32_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now let's look for the best \(\lambda\) using cross validation. So the
+best \(\lambda\) from cross validation is: 5\\
+And the MSE is: 16201
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{131}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{set.seed}\PY{p}{(}\PY{l+m}{2906}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{warn}\PY{o}{=}\PY{l+m}{\PYZhy{}1}\PY{p}{)}
+\PY{n}{cv.lasso} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{cv.glmnet}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m}{1}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{cv.lasso}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{text}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n+nf}{log}\PY{p}{(}\PY{n}{cv.lasso}\PY{o}{\PYZdl{}}\PY{n}{lambda.min}\PY{p}{)}\PY{l+m}{+0.5}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{30000}\PY{p}{,} \PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{ best log(λ) =\PYZdq{}}\PY{p}{,}\PY{n+nf}{round}\PY{p}{(}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{cv.lasso}\PY{o}{\PYZdl{}}\PY{n}{lambda.min}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{l+m}{4}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{cross} \PY{o}{\PYZti{}} \PY{n}{validation} \PY{o}{\PYZti{}}\PY{n}{For}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} best lambda and MSE}
+
+\PY{n}{best.lambda} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n}{cv.lasso}\PY{o}{\PYZdl{}}\PY{n}{lambda.min}
+
+
+\PY{n}{mse}\PY{o}{\PYZlt{}\PYZhy{}}\PY{n+nf}{min}\PY{p}{(}\PY{n}{cv.lasso}\PY{o}{\PYZdl{}}\PY{n}{cvm}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_34_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    On the basis of MSE , the model fitted with lasso has got the same MSE
+by the way The resulting model with lasso is simpler. Now we can
+Re-estimate the model using the best \(\lambda\). Below we seen the
+coefficients of the model, graphical representation of the coefficients
+for the best \(\lambda\) and model deviance.\\
+The maximum explained deviance is obtained for the minimum (best)
+\(\lambda\) and it is equal to: 0.72\\
+Furthermore from the new coefficients we can see that some of the
+coefficients are zero, so the lasso performed a model selection. In
+particular thenot coefficients equal to 0 are: comedytrue, animatedtrue
+, fandango, and starpower. Also mprating3 is set to 0. So the total
+number of coefficients different from 0 is 10.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{135}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{}\PYZsh{} best model}
+
+\PY{n}{m.lasso.min} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{glmnet}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m}{1}\PY{p}{,} \PY{n}{lambda}\PY{o}{=}\PY{n}{best.lambda}\PY{p}{)}
+\PY{n}{m.lasso.min}
+\PY{n+nf}{coef}\PY{p}{(}\PY{n}{m.lasso.min}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} number of coefficient diversi da 0}
+
+\PY{n}{id.zero} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which}\PY{p}{(}\PY{n+nf}{coef}\PY{p}{(}\PY{n}{m.lasso.min}\PY{p}{)}\PY{o}{==}\PY{l+m}{0}\PY{p}{)}
+\PY{n}{nonzero} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{length}\PY{p}{(}\PY{n+nf}{coef}\PY{p}{(}\PY{n}{m.lasso.min}\PY{p}{)}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n+nf}{length}\PY{p}{(}\PY{n}{id.zero}\PY{p}{)}
+
+\PY{n}{nonzero}
+
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.lasso}\PY{p}{,} \PY{n}{xvar}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{lambda\PYZsq{}}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{}\PYZsh{} add on the line corresponding to the best lambda abline(v=log(best.lambda), lty=2)}
+\PY{n+nf}{title}\PY{p}{(}\PY{n+nf}{expression}\PY{p}{(}\PY{n}{Graphical} \PY{o}{\PYZti{}} \PY{n}{evaluation} \PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{o}{\PYZti{}}\PY{n}{with}\PY{o}{\PYZti{}}\PY{n}{x}\PY{p}{[}\PY{n}{axis}\PY{p}{]}\PY{o}{\PYZti{}}\PY{n}{expressed}\PY{o}{\PYZti{}}\PY{n}{In}\PY{o}{\PYZti{}}\PY{n}{terms}\PY{o}{\PYZti{}}\PY{n}{of}\PY{o}{\PYZti{}}\PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} deviance}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{m.lasso}\PY{o}{\PYZdl{}}\PY{n}{lambda}\PY{p}{)}\PY{p}{,} \PY{n}{m.lasso}\PY{o}{\PYZdl{}}\PY{n}{dev.ratio}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,}
+        \PY{n}{xlab}\PY{o}{=}\PY{n+nf}{expression}\PY{p}{(}\PY{n+nf}{log}\PY{p}{(}\PY{n}{lambda}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Explained deviance\PYZsq{}}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n+nf}{log}\PY{p}{(}\PY{n}{best.lambda}\PY{p}{)}\PY{p}{,} \PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{legend}\PY{p}{(}\PY{n}{legend} \PY{o}{=} \PY{n+nf}{expression}\PY{p}{(}\PY{n}{best}\PY{o}{\PYZti{}} \PY{n+nf}{symbol}\PY{p}{(}\PY{n}{l}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lt}\PY{o}{=}\PY{l+m}{2}\PY{p}{,}\PY{n}{x} \PY{o}{=} \PY{l+m}{\PYZhy{}6}\PY{p}{,}\PY{n}{bty}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{n\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{0.5}\PY{p}{)}
+\PY{n+nf}{title }\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Graph of explained deviance\PYZdq{}}\PY{p}{,}\PY{n}{line}\PY{o}{=}\PY{l+m}{2.7}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} maxi explained deviance}
+\PY{n+nf}{max}\PY{p}{(}\PY{n}{m.lasso}\PY{o}{\PYZdl{}}\PY{n}{dev.ratio}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:  glmnet(x = X, y = y, alpha = 1, lambda = best.lambda) 
+
+     Df   \%Dev Lambda
+[1,]  9 0.7104  5.147
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+15 x 1 sparse Matrix of class "dgCMatrix"
+                        s0
+(Intercept)  -46.209355470
+mprating2     32.812449674
+mprating3      .          
+mprating4    -25.156457342
+budget         1.163192402
+starpower      .          
+sequelTRUE    92.792137770
+actionTRUE   -97.469669173
+comedyTRUE     .          
+animatedTRUE   .          
+horrorTRUE     3.672794196
+addict         0.006753868
+cmngsoon       0.298359645
+fandango       .          
+cntwait      282.999782870
+    \end{Verbatim}
+
+    
+    10
+
+    
+    0.722200254013464
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_36_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Compare the results with those from the linear model. We have that : -
+MSE for lasso is:16201 - MSE for linear model is:16332
+
+There is a difference. Since there is substantial variable selection,
+lasso is more interesting and we keep it.
+
+Let's also plot the prediction for both methods.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{138}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{prediction.ridge} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{predict}\PY{p}{(}\PY{n}{m.ridge.min}\PY{p}{,} \PY{n}{newx}\PY{o}{=}\PY{n}{X}\PY{p}{)}
+\PY{n}{prediction.lasso} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{predict}\PY{p}{(}\PY{n}{m.lasso.min}\PY{p}{,} \PY{n}{newx}\PY{o}{=}\PY{n}{X}\PY{p}{)}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{prediction.ridge}\PY{p}{,} \PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,}
+        \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Predictions with Ridge\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{l+m}{0}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{red\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{prediction.lasso}\PY{p}{,}\PY{n}{mydata}\PY{o}{\PYZdl{}}\PY{n}{box}\PY{p}{,}
+        \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Predictions with Lasso\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{l+m}{0}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{red\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_38_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{automatic-selection}{%
+\subsubsection{AUTOMATIC SELECTION}\label{automatic-selection}}
+
+\hypertarget{forward-selection}{%
+\paragraph{FORWARD SELECTION}\label{forward-selection}}
+
+Let's try automatic selection
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{156}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{library}\PY{p}{(}\PY{n}{leaps}\PY{p}{)}
+\PY{n}{m.forward} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{regsubsets}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{.}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{,} \PY{n}{nvmax}\PY{o}{=}\PY{l+m}{14}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{forward\PYZsq{}}\PY{p}{)}
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward} \PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} BIC and RSS}
+
+\PY{c+c1}{\PYZsh{}rss}
+\PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{} BIc}
+\PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Subset selection object
+Call: regsubsets.formula(box \textasciitilde{} ., data = mydata, nvmax = 14, method = "forward")
+14 Variables  (and intercept)
+             Forced in Forced out
+mprating2        FALSE      FALSE
+mprating3        FALSE      FALSE
+mprating4        FALSE      FALSE
+budget           FALSE      FALSE
+starpower        FALSE      FALSE
+sequelTRUE       FALSE      FALSE
+actionTRUE       FALSE      FALSE
+comedyTRUE       FALSE      FALSE
+animatedTRUE     FALSE      FALSE
+horrorTRUE       FALSE      FALSE
+addict           FALSE      FALSE
+cmngsoon         FALSE      FALSE
+fandango         FALSE      FALSE
+cntwait          FALSE      FALSE
+1 subsets of each size up to 14
+Selection Algorithm: forward
+          mprating2 mprating3 mprating4 budget starpower sequelTRUE actionTRUE
+1  ( 1 )  " "       " "       " "       " "    " "       " "        " "       
+2  ( 1 )  " "       " "       " "       " "    " "       " "        " "       
+3  ( 1 )  " "       " "       " "       "*"    " "       " "        " "       
+4  ( 1 )  " "       " "       " "       "*"    " "       "*"        " "       
+5  ( 1 )  " "       " "       " "       "*"    " "       "*"        "*"       
+6  ( 1 )  " "       " "       " "       "*"    " "       "*"        "*"       
+7  ( 1 )  "*"       " "       " "       "*"    " "       "*"        "*"       
+8  ( 1 )  "*"       "*"       " "       "*"    " "       "*"        "*"       
+9  ( 1 )  "*"       "*"       " "       "*"    "*"       "*"        "*"       
+10  ( 1 ) "*"       "*"       " "       "*"    "*"       "*"        "*"       
+11  ( 1 ) "*"       "*"       " "       "*"    "*"       "*"        "*"       
+12  ( 1 ) "*"       "*"       "*"       "*"    "*"       "*"        "*"       
+13  ( 1 ) "*"       "*"       "*"       "*"    "*"       "*"        "*"       
+14  ( 1 ) "*"       "*"       "*"       "*"    "*"       "*"        "*"       
+          comedyTRUE animatedTRUE horrorTRUE addict cmngsoon fandango cntwait
+1  ( 1 )  " "        " "          " "        " "    " "      " "      "*"    
+2  ( 1 )  " "        " "          " "        "*"    " "      " "      "*"    
+3  ( 1 )  " "        " "          " "        "*"    " "      " "      "*"    
+4  ( 1 )  " "        " "          " "        "*"    " "      " "      "*"    
+5  ( 1 )  " "        " "          " "        "*"    " "      " "      "*"    
+6  ( 1 )  " "        " "          " "        "*"    "*"      " "      "*"    
+7  ( 1 )  " "        " "          " "        "*"    "*"      " "      "*"    
+8  ( 1 )  " "        " "          " "        "*"    "*"      " "      "*"    
+9  ( 1 )  " "        " "          " "        "*"    "*"      " "      "*"    
+10  ( 1 ) "*"        " "          " "        "*"    "*"      " "      "*"    
+11  ( 1 ) "*"        " "          "*"        "*"    "*"      " "      "*"    
+12  ( 1 ) "*"        " "          "*"        "*"    "*"      " "      "*"    
+13  ( 1 ) "*"        " "          "*"        "*"    "*"      "*"      "*"    
+14  ( 1 ) "*"        "*"          "*"        "*"    "*"      "*"      "*"    
+    \end{Verbatim}
+
+    
+    14
+
+    
+    6
+
+    
+    From the following plot we see as computed before that the best model
+basing on BIC is 6 variables.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{157}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{10}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.forward}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{adjr2\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_42_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{158}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} R2}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{R2\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} add on the indication of the best model}
+\PY{n}{max.rsq} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.max}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{max.rsq}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{[}\PY{n}{max.rsq}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{max.rsq}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} RSS}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{RSS\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{min.rss} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{min.rss}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{[}\PY{n}{min.rss}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{min.rss}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Adjusted R2}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Adjusted R2\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{max.adjr2} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.max}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{max.adjr2}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{[}\PY{n}{max.adjr2}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{max.adjr2}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} BIC}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{BIC\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{min.bic} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{min.bic}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.forward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{[}\PY{n}{min.bic}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{min.bic}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{the number of covariates for the best model base on BIC and AdjR2 are:\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ \PYZdq{}}\PY{p}{,} \PY{n}{max.adjr2}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ \PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{for adjr2 and \PYZdq{}}\PY{p}{,} \PY{n}{min.bic}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ for BIC\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    'the number of covariates for the best model base on BIC and AdjR2 are: 8 for adjr2 and 6 for BIC'
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    base on BIC we keep the model with the lowest BIC so with a number of
+variablesequal to : 6.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{159}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model.bic} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{lm}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{action}\PY{o}{+}\PY{n}{addict}\PY{o}{+}\PY{n}{cntwait}\PY{o}{+}\PY{n}{budget}\PY{o}{+}\PY{n}{cmngsoon}\PY{o}{+}\PY{n}{sequel}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{model.bic}\PY{p}{)}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{model.bic}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{,} \PY{n}{cex}\PY{o}{=}\PY{l+m}{0.7}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Call:
+lm(formula = box \textasciitilde{} action + addict + cntwait + budget + cmngsoon + 
+    sequel, data = mydata)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-268.797  -56.825   -2.847   65.504  207.729 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -7.599e+01  4.735e+01  -1.605 0.114353    
+actionTRUE  -1.280e+02  3.606e+01  -3.550 0.000807 ***
+addict       6.403e-03  2.188e-03   2.926 0.005013 ** 
+cntwait      3.358e+02  1.212e+02   2.771 0.007644 ** 
+budget       1.366e+00  3.854e-01   3.544 0.000822 ***
+cmngsoon     3.222e-01  1.587e-01   2.030 0.047288 *  
+sequelTRUE   1.016e+02  4.617e+01   2.199 0.032153 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 101.4 on 54 degrees of freedom
+Multiple R-squared:  0.696,	Adjusted R-squared:  0.6622 
+F-statistic:  20.6 on 6 and 54 DF,  p-value: 2.221e-12
+
+    \end{Verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_45_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now we can judge also our model considering the residuals. The graph of
+residuals indicates that the model does not have a good fit. In fact,
+the first graph (scatter plot of the residuals) does show a
+deterministic pattern . In addition, the mean of the residuals does not
+appear to be 0 and the variance of the residuals does not appear to be
+constant, as it should be based on the assumptions that the regression
+model places on the ε errors. Furthermore, the normality of the
+residuals is not satisfied as highlighted in the second graph: the
+empirical quantiles in the tails , in fact, do deviate from the
+theoretical quantiles of a standard normal. To complete the analysis of
+the residuals, no outliers appear to be present: although R highlights
+observations, these do not represent outlier observations since Cook's
+distance is not large.
+
+    \hypertarget{backword-selection}{%
+\subsubsection{BACKWORD SELECTION}\label{backword-selection}}
+
+Let's perform backword selection.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{151}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m.backward} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{regsubsets}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{.}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{,} \PY{n}{nvmax}\PY{o}{=}\PY{l+m}{17}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{backward\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}plot(m.backward)}
+
+
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{10}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.backward}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{adjr2\PYZsq{}}\PY{p}{)}
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} R2}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{R2\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} add on the indication of the best model}
+\PY{n}{max.rsq} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.max}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{max.rsq}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{[}\PY{n}{max.rsq}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{max.rsq}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} RSS}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{RSS\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{min.rss} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{min.rss}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{[}\PY{n}{min.rss}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{min.rss}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Adjusted R2}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Adjusted R2\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{max.adjr2} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.max}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{max.adjr2}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{[}\PY{n}{max.adjr2}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{max.adjr2}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} BIC}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{BIC\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{min.bic} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{min.bic}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.backward}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{[}\PY{n}{min.bic}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{min.bic}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{the number of covariates for the best model base on BIC and AdjR2 are:\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ \PYZdq{}}\PY{p}{,} \PY{n}{max.adjr2}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ \PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{for adjr2 and \PYZdq{}}\PY{p}{,} \PY{n}{min.bic}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ for BIC\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_48_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    'the number of covariates for the best model base on BIC and AdjR2 are: 8 for adjr2 and 6 for BIC'
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_48_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    As you can see, forward and backward give us the same amount of
+covariates based on BIC. In fact in this case we have 6 variables.
+
+    \hypertarget{mixed-selection}{%
+\subsubsection{MIXED SELECTION}\label{mixed-selection}}
+
+Let's perform mixed selection.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{153}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m.seqrep} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{regsubsets}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{.}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{,} \PY{n}{nvmax}\PY{o}{=}\PY{l+m}{17}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{seqrep\PYZsq{}}\PY{p}{)}
+
+
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{10}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{adjr2\PYZsq{}}\PY{p}{)}
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{2}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} R2}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{R2\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} add on the indication of the best model}
+\PY{n}{max.rsq} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.max}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{max.rsq}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rsq}\PY{p}{[}\PY{n}{max.rsq}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{max.rsq}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} RSS}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{RSS\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{min.rss} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{min.rss}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{rss}\PY{p}{[}\PY{n}{min.rss}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{min.rss}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} Adjusted R2}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,}
+\PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Adjusted R2\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{max.adjr2} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.max}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{max.adjr2}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{adjr2}\PY{p}{[}\PY{n}{max.adjr2}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{max.adjr2}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} BIC}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Number of covariates\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{BIC\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{)}
+\PY{n}{min.bic} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{which.min}\PY{p}{(}\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{)}
+\PY{n+nf}{points}\PY{p}{(}\PY{n}{min.bic}\PY{p}{,} \PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.seqrep}\PY{p}{)}\PY{o}{\PYZdl{}}\PY{n}{bic}\PY{p}{[}\PY{n}{min.bic}\PY{p}{]}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{red\PYZsq{}}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{16}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n}{min.bic}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{lty}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+
+\PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{the number of covariates for the best model base on BIC and AdjR2 are:\PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ \PYZdq{}}\PY{p}{,} \PY{n}{max.adjr2}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ \PYZdq{}}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{for adjr2 and \PYZdq{}}\PY{p}{,} \PY{n}{min.bic}\PY{p}{,} \PY{l+s}{\PYZdq{}}\PY{l+s}{ for BIC\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    'the number of covariates for the best model base on BIC and AdjR2 are: 9 for adjr2 and 6 for BIC'
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    As you can see, forward ,backward and mixed selection give us the same
+amount of covariates based on BIC
+
+    \hypertarget{principal-component-analysis}{%
+\subsubsection{PRINCIPAL COMPONENT
+ANALYSIS}\label{principal-component-analysis}}
+
+Let's consider Principal component analysis in order to see if it is
+useful. I set the seed at 222.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{161}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} PCA}
+\PY{n+nf}{library}\PY{p}{(}\PY{n}{pls}\PY{p}{)}
+\PY{n+nf}{set.seed}\PY{p}{(}\PY{l+m}{222}\PY{p}{)}
+\PY{n}{m.pcr} \PY{o}{\PYZlt{}\PYZhy{}} \PY{n+nf}{pcr}\PY{p}{(}\PY{n}{box} \PY{o}{\PYZti{}} \PY{n}{.}\PY{p}{,} \PY{n}{scale}\PY{o}{=}\PY{k+kc}{TRUE}\PY{p}{,} \PY{n}{validation}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{CV\PYZsq{}}\PY{p}{,} \PY{n}{data}\PY{o}{=}\PY{n}{mydata}\PY{p}{)}
+\PY{n+nf}{summary}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+Attaching package: ‘pls’
+
+The following object is masked from ‘package:stats’:
+
+    loadings
+
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Data:   X dimension: 61 14
+        Y dimension: 61 1
+Fit method: svdpc
+Number of components considered: 14
+
+VALIDATION: RMSEP
+Cross-validated using 10 random segments.
+       (Intercept)  1 comps  2 comps  3 comps  4 comps  5 comps  6 comps
+CV           175.9    132.3    132.4    130.2    135.2    135.2    124.6
+adjCV        175.9    131.8    132.0    129.7    134.7    136.0    123.3
+       7 comps  8 comps  9 comps  10 comps  11 comps  12 comps  13 comps
+CV       123.2    120.9    117.3     119.4     122.9     120.8     122.4
+adjCV    122.1    119.9    115.1     118.2     121.6     119.2     120.7
+       14 comps
+CV        125.2
+adjCV     123.3
+
+TRAINING: \% variance explained
+     1 comps  2 comps  3 comps  4 comps  5 comps  6 comps  7 comps  8 comps
+X      24.46    42.85    55.35    64.45    71.92    78.49    83.74    88.35
+box    46.96    47.89    50.58    51.08    51.21    62.12    65.20    66.20
+     9 comps  10 comps  11 comps  12 comps  13 comps  14 comps
+X      91.61     94.56     96.66     98.42     99.71    100.00
+box    69.21     69.34     70.66     71.97     72.06     72.22
+    \end{Verbatim}
+
+    The output provides the result of the cross validation in terms of
+square root of the MSE for each number of PCs. -Choose the optimum
+through a graphical inspection of the results considering MSE and
+\(R^{2}\). We see that the number of PCs needed is: 14 While the best
+number of components we can use for the analysis based on R comand
+SelectNcompo is : 1 We also have that the value of MSE is reported
+below.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{162}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{MSEP}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+       (Intercept)  1 comps
+CV           30924    17507
+adjCV        30924    17376
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{167}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} graph without axes}
+
+\PY{n+nf}{validationplot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{val.type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{MSEP\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Y\PYZsq{}}\PY{p}{,} \PY{n}{axes}\PY{o}{=}\PY{k+kc}{FALSE}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} add on the x\PYZhy{}axis (1) with the specification (at) of the points at which tick\PYZhy{}mar \PYZsh{}\PYZsh{} are to be drawn}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{1}\PY{p}{,} \PY{n}{at}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{14}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}\PYZsh{} add on the y\PYZhy{}axis}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{2}\PY{p}{)}
+\PY{n+nf}{text}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+m}{4}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{20000}\PY{p}{,}\PY{n}{cex}\PY{o}{=}\PY{l+m}{0.75}\PY{p}{,}\PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{number of PCs sufficient based on Selectncomp =\PYZdq{}}\PY{p}{,} \PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{red\PYZdq{}}\PY{p}{,}\PY{n}{lt}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+
+\PY{n+nf}{validationplot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{val.type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{R2\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Y\PYZsq{}}\PY{p}{,} \PY{n}{axes}\PY{o}{=}\PY{k+kc}{FALSE}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{1}\PY{p}{,} \PY{n}{at}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{14}\PY{p}{)}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{2}\PY{p}{)}
+\PY{n+nf}{text}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+m}{4}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{0.3}\PY{p}{,}\PY{n}{cex}\PY{o}{=}\PY{l+m}{0.75}\PY{p}{,}\PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{number of PCs sufficient based on Selectncomp=\PYZdq{}}\PY{p}{,} \PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{red\PYZdq{}}\PY{p}{,}\PY{n}{lt}\PY{o}{=}\PY{l+m}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_57_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let's look how much variance is explained by the 14 components in the
+plot below. While te explained variance for our 1 PCs obtained before is
+25\% that is a bit low. So we will also consider 10 components that are
+the same number obtained by lasso which lead to 95\% of explained
+deviance.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{178}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} explained variance}
+
+\PY{n}{sum}\PY{o}{=}\PY{n+nf}{sum}\PY{p}{(}\PY{n+nf}{explvar}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{)}\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{} plot:}
+
+\PY{n+nf}{plot}\PY{p}{(}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{14}\PY{p}{,} \PY{n+nf}{explvar}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{)}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Percentage of explained variance\PYZsq{}}\PY{p}{,}
+        \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{PCs\PYZsq{}}\PY{p}{,} \PY{n}{type}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{l\PYZsq{}}\PY{p}{,} \PY{n}{axes}\PY{o}{=}\PY{k+kc}{FALSE}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{Explained variance for the PCs\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{1}\PY{p}{,} \PY{n}{at}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{14}\PY{p}{)}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{2}\PY{p}{)}
+\PY{n+nf}{text}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{l+m}{3}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m}{5}\PY{p}{,}\PY{n}{cex}\PY{o}{=}\PY{l+m}{0.75}\PY{p}{,}\PY{n+nf}{paste0}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{explained variance for our 1 PC=\PYZdq{}}\PY{p}{,}\PY{n}{sum}\PY{p}{,}\PY{l+s}{\PYZdq{}}\PY{l+s}{\PYZpc{}\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{n}{v}\PY{o}{=}\PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{red\PYZdq{}}\PY{p}{,}\PY{n}{lt}\PY{o}{=}\PY{l+m}{2}\PY{p}{,}\PY{n}{lwd}\PY{o}{=}\PY{l+m}{4}\PY{p}{)}
+
+
+
+\PY{n}{x2} \PY{o}{=} \PY{n+nf}{c}\PY{p}{(}\PY{l+m}{0}\PY{p}{,}\PY{l+m}{0}\PY{p}{,}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{1}\PY{p}{)}
+\PY{n}{y2} \PY{o}{=} \PY{n+nf}{c}\PY{p}{(}\PY{l+m}{0}\PY{p}{,}\PY{l+m}{100}\PY{p}{,}\PY{n+nf}{explvar}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{)}\PY{p}{[}\PY{l+m}{1}\PY{o}{:}\PY{n+nf}{selectNcomp}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{onesigma\PYZsq{}}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{14}\PY{p}{)}\PY{p}{]}\PY{p}{,}\PY{l+m}{0}\PY{p}{)}
+\PY{n+nf}{polygon}\PY{p}{(}\PY{n}{x2}\PY{p}{,}\PY{n}{y2}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{lightblue\PYZdq{}}\PY{p}{,} \PY{n}{border}\PY{o}{=}\PY{k+kc}{NA}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_59_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let's now plot Plot the regression coefficients associated to the models
+with increasing PCs, from 1 to 10 We see that we have our 10 models. We
+look for the picks. As picks are higher as our model is better. The
+model with 10 comps give us the largest amount of informations (higher
+explained deviance).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{184}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}plot}
+
+\PY{n+nf}{par}\PY{p}{(}\PY{n}{mfrow}\PY{o}{=}\PY{n+nf}{c}\PY{p}{(}\PY{l+m}{1}\PY{p}{,}\PY{l+m}{2}\PY{p}{)}\PY{p}{)}
+\PY{n+nf}{options}\PY{p}{(}\PY{n}{repr.plot.width} \PY{o}{=} \PY{l+m}{15}\PY{p}{,} \PY{n}{repr.plot.height} \PY{o}{=} \PY{l+m}{7}\PY{p}{)}
+\PY{n+nf}{coefplot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{10}\PY{p}{,} \PY{n}{legendpos}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{topleft\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}
+        \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Regression coefficients\PYZsq{}}\PY{p}{,}\PY{n}{xaxt}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{n\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{1}\PY{p}{,} \PY{n}{at}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{12}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n+nf}{colnames}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}\PY{p}{[}\PY{l+m}{\PYZhy{}1}\PY{p}{]}\PY{p}{,} \PY{n}{las}\PY{o}{=}\PY{l+m}{2}\PY{p}{,} \PY{n}{cex}\PY{o}{=}\PY{l+m}{1}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{1}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Regression coefficients associated to the models with increasing PCs\PYZdq{}}\PY{p}{)}
+
+\PY{n+nf}{coefplot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{ncomp}\PY{o}{=}\PY{l+m}{10}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{p}{,}\PY{n}{xaxt}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{n\PYZdq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Regression coefficients\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{cyan\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{title}\PY{p}{(}\PY{l+s}{\PYZdq{}}\PY{l+s}{Regression coefficients associated to 10 Pcs   model\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{axis}\PY{p}{(}\PY{l+m}{1}\PY{p}{,} \PY{n}{at}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{12}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n+nf}{colnames}\PY{p}{(}\PY{n}{mydata}\PY{p}{)}\PY{p}{[}\PY{l+m}{\PYZhy{}1}\PY{p}{]}\PY{p}{,} \PY{n}{las}\PY{o}{=}\PY{l+m}{2}\PY{p}{,} \PY{n}{cex}\PY{o}{=}\PY{l+m}{1}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_61_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Let's evaluate the presence of of groups of observations or outliers
+through the scores. We do not see a kind of trend in the groups. So PCA
+is satisfactory.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{185}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nf}{scoreplot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{comps}\PY{o}{=}\PY{l+m}{1}\PY{o}{:}\PY{l+m}{5}\PY{p}{,} \PY{n}{cex}\PY{o}{=}\PY{l+m}{0.5}\PY{p}{,} \PY{n}{cex.lab}\PY{o}{=}\PY{l+m}{1.4}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{1.4}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\PY{n+nf}{scoreplot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{comps}\PY{o}{=}\PY{l+m}{6}\PY{o}{:}\PY{l+m}{10}\PY{p}{,} \PY{n}{cex}\PY{o}{=}\PY{l+m}{0.5}\PY{p}{,} \PY{n}{cex.lab}\PY{o}{=}\PY{l+m}{1.4}\PY{p}{,} \PY{n}{cex.axis}\PY{o}{=}\PY{l+m}{1.4}\PY{p}{,} \PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_63_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Finally, evaluate the predictions from the model. Values around the
+bisector does suggest a good behavior of the model.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{186}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} plot predizione}
+\PY{n+nf}{plot}\PY{p}{(}\PY{n}{m.pcr}\PY{p}{,} \PY{n}{xlab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Observed values\PYZsq{}}\PY{p}{,} \PY{n}{ylab}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Predictions\PYZsq{}}\PY{p}{,}
+        \PY{n}{main}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{Predictions PCA\PYZsq{}}\PY{p}{,}\PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{blue\PYZdq{}}\PY{p}{,}\PY{n}{pch}\PY{o}{=}\PY{l+m}{19}\PY{p}{)}
+\PY{n+nf}{abline}\PY{p}{(}\PY{l+m}{0}\PY{p}{,} \PY{l+m}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+s}{\PYZdq{}}\PY{l+s}{red\PYZdq{}}\PY{p}{,}\PY{n}{lt}\PY{o}{=}\PY{l+m}{2}\PY{p}{,}\PY{n}{lwd}\PY{o}{=}\PY{l+m}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_65_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Finally we compute the MSE considering 11 components which is equal to:
+9173.
+
+    \hypertarget{conclusion-point-2}{%
+\section{Conclusion Point 2}\label{conclusion-point-2}}
+
+Base on MSE we have: - MSE for lasso is:16201
+
+\begin{itemize}
+\item
+  MSE for linear model is:16332
+\item
+  MSE for ridge is:16203
+\item
+  MSE for PCA is: 9173
+\end{itemize}
+
+So based on MSE the best approach is with the PCA. In particular we see
+that the 10 PC depends on sequel, comedy, horror and fandango. By the
+way PCA usually is used for clustering purpose so we might pay attention
+about these results. Considering the variable selection lasso usually is
+a better approach and in this case it gives a model without the
+following covariates:: comedy, animated , fandango, starpower and
+mprating3. As concern the automatic selection since the residual of the
+selection are not good I decided to not consider it.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
